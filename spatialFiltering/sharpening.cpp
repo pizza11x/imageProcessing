@@ -39,5 +39,6 @@ int main(int argc, char** argv){
     imshow("SobelY image", imgSobelY);
 
     waitKey(0);
+    destroyAllWindows();
     return 0;
 }
