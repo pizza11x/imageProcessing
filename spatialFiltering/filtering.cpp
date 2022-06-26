@@ -71,6 +71,7 @@ int main(int argc, char ** argv){
     imshow("Mask", mask255);
 
     waitKey(0);
+    destroyAllWindows();
     return 0;
     
 }
