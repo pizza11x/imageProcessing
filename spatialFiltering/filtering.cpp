@@ -50,12 +50,12 @@ int main(int argc, char ** argv){
     Mat outputGaussian;
     GaussianBlur(image, outputGaussian, Size(dim, dim), 0,0);
 
-    cv::imshow("Original image", image);
-    cv::imshow("Filter2D image", output2D);
-    cv::imshow("Blur image", outputBlur);
-    cv::imshow("BoxFilter image", outputBox);
-    cv::imshow("MedianBlur image", outputMedian);
-    cv::imshow("GaussianBlur image", outputGaussian);
+    imshow("Original image", image);
+    imshow("Filter2D image", output2D);
+    imshow("Blur image", outputBlur);
+    imshow("BoxFilter image", outputBox);
+    imshow("MedianBlur image", outputMedian);
+    imshow("GaussianBlur image", outputGaussian);
 
     cout << "Insert threshold: ";
     cin >> th;
@@ -64,13 +64,13 @@ int main(int argc, char ** argv){
     Mat mask;
     threshold(outputGaussian, mask, th, 1, CV_THRESH_BINARY);
     //Image * mask for rotate only the points of interest
-    cv::imshow("Image*Mak", image.mul(mask));
+    imshow("Image*Mak", image.mul(mask));
 
     Mat mask255;
     threshold(outputGaussian, mask255, th, 255, CV_THRESH_BINARY);
-    cv::imshow("Mask", mask255);
+    imshow("Mask", mask255);
 
-    cv::waitKey(0);
+    waitKey(0);
     return 0;
     
 }
