@@ -13,7 +13,7 @@ int main( int argc, char** argv ){
     }
     String imageName = argv[1];
 
-	//Lettura immagine    
+	//Read image    
     Mat image;
     image = imread(imageName, IMREAD_COLOR );
     if( image.empty() ){
