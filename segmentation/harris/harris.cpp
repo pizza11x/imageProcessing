@@ -39,20 +39,18 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    Mat harris(image.rows, image.cols, image.type());
-    image.copyTo(harris);
-
-    harrisCornering(image, harris, 0.04, 100);
+    Mat imgHarris;
+    harrisCornering(image, imgHarris, 0.04, 100);
 
     imshow("Original image", image);
-    imshow("Harris cornering", harris);
+    imshow("Harris cornering", imgHarris);
     waitKey(0);
     destroyAllWindows();
 
     return 0;
 }
 
-void harrisCornering(Mat& src, Mat &output, float k, int thresholdValue)
+void harrisCornering(Mat& src, Mat &output, float kSize, int thresholdValue)
 {
     //STEP 1: Apply Sobel to both directions
     Mat Dx, Dy;
@@ -82,10 +80,11 @@ void harrisCornering(Mat& src, Mat &output, float k, int thresholdValue)
         It is the contribution of the trace to the final calculation of R.
         (amount of trace that I subtract from the determinant).
     */
-    R = detrm - k * trace2; 
+    R = detrm - kSize * trace2; 
     
     //STEP 6
     normalize(R, R, 0, 255, NORM_MINMAX, CV_32FC1);
+    output = src.clone();
 
     for (int i = 0; i < src.rows; i++) {
         for (int j = 0; j < src.cols; j++) {
