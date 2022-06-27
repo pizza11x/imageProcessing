@@ -30,21 +30,30 @@ int main(int argc, char** argv){
     Mat imgGaussian;
     GaussianBlur(image, imgGaussian, Size(dim, dim), 0,0);
 
+    // With Sobel's filters I get the x and y components of the gradient vector.
+    //Dx e Dy sono le componenti per ogni pixel del vettore gradiente.
     Mat Dx;
     Sobel(imgGaussian, Dx, CV_32FC1, 0,1);
 
     Mat Dy;
     Sobel(imgGaussian, Dy, CV_32FC1, 1, 0);
 
-    Mat magnitudo = abs(Dx)+abs(Dy);
-    normalize(magnitudo, magnitudo, 0, 255, NORM_MINMAX, CV_8U);
+    //Calculate magnitude
+    Mat magnitude = abs(Dx)+abs(Dy);
+    normalize(magnitude, magnitude, 0, 255, NORM_MINMAX, CV_8U);
     
     Mat orientations;
+
+    /* Calculate the arctangent of the gradient vectors in each position. 
+    The directions of the gradient vector at each position are calculated, then the angle. */
     phase(Dx, Dy, orientations, true);
+
+    /*Phase, e quindi l'arcotangente, restituisce valori a -pigreco/2 e +pigreco/2, 
+    ma con la funzione "normalize" li riportiamo nell'intervallo 0-255. */
     normalize(orientations, orientations, 0, 255, NORM_MINMAX, CV_8U);
 
     imshow("Original image", image);
-    imshow("Magnitudo", magnitudo);
+    imshow("Magnitudo", magnitude);
     imshow("Orientations", orientations);
     waitKey(0);
     destroyAllWindows();
@@ -54,8 +63,9 @@ int main(int argc, char** argv){
     cout<<"Insert threshold value: ";
     cin >> th; //75
 
+    // Used to threshold the magnitude and get a cleaner image.
     Mat Th;
-    threshold(magnitudo, Th, th, 255, CV_THRESH_BINARY);
+    threshold(magnitude, Th, th, 255, CV_THRESH_BINARY);
 
     imshow("Magnitudo threshold", Th);
     waitKey(0);
