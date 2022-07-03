@@ -26,10 +26,10 @@ int main(int argc, char** argv){
         return -1;
     }
 
-    Mat output;
-    houghLines(image, output, 120);
-
     imshow("Original image", image);
+    Mat output;
+    houghLines(image, output, 200);
+
     imshow("Output image", output);
 
     waitKey(0);
@@ -41,12 +41,11 @@ int main(int argc, char** argv){
 void houghLines(Mat &src, Mat &output, int threshold){
     Mat gaussian;
     //Let's do some smoothing on the iage to reduce the noise
-    GaussianBlur(src, gaussian, Size(5,5), 0,0, BORDER_DEFAULT);
+    GaussianBlur(src, gaussian, Size(7,7), 2,2);
 
     //First we apply Canny to get the image of the segmantation and then all the edges
     Mat canny;
-    Canny(gaussian, canny, 80, 110, 3);
-    canny.copyTo(output);
+    Canny(gaussian, canny, 50, 150, 3);
 
     double theta, rho;
     int x, y;
@@ -94,9 +93,12 @@ void houghLines(Mat &src, Mat &output, int threshold){
 
                 Point pt1(cvRound(x + dist * (-sin_t)), cvRound(y+dist*cos_t));
                 Point pt2(cvRound(x - dist * (-sin_t)), cvRound(y-dist*cos_t));
-                line(src, pt1, pt2, Scalar(255), 2, 0);
+                line(src, pt1, pt2, Scalar(0), 2, 0);
             }
         }
     }
+
+    src.copyTo(output);
+
 
 }
