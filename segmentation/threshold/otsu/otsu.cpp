@@ -1,13 +1,9 @@
-#include <opencv2/opencv.hpp>
-#include <cstdlib>
-#include <iostream>
+#include "../otsu.h"
 
-using namespace std;
-using namespace cv;
-
-void otsu(Mat &src, Mat &output);
+int otsu(vector<double> histogram);
 
 int main(int argc, char** argv){
+
     if(argc < 2){
         cout<<"usage: "<<argv[0]<<" image_name"<<endl;
         exit(0);
@@ -26,62 +22,42 @@ int main(int argc, char** argv){
     }
 
     imshow("Original image", image);
+    Mat blur;
+    GaussianBlur(image, blur, Size(3, 3), 0);
+
+    vector <double> hist = normalizedHistogram(blur);
 
     Mat output;
-    otsu(image, output);
-
+    threshold(blur, output, otsu(hist), 255, THRESH_BINARY);
     imshow("Otsu image", output);
-    
+
     waitKey(0);
     destroyAllWindows();
+
     return 0;
 }
 
-void otsu(Mat &src, Mat &output){
-    double normHistogram[256];
-    for(int i=0; i<src.rows; i++){
-        for(int j=0; j<src.cols; j++){
-            normHistogram[src.at<uchar>(i, j)]+=1;
-        }
+int otsu(vector<double> his){
+    double avgCum = 0.0f;
+    for(int i = 0; i < 256; i++){
+        avgCum += i * his[i];
     }
-    double N = src.cols*src.rows;
-    double globalMean = 0;
+    double prob = 0.0f;
+    double currAvgCum = 0.0f;
+    double currVariance = 0.0f;
+    double maxVariance = 0.0f;
+    int threshold;
 
-    for(int i =0; i < 256; i++){
-        //Normalize histogram
-        normHistogram[i] = normHistogram[i]/N;
-        //Calculate global average 
-        globalMean += i * normHistogram[i];
-    }
-
-    double P1k, p1k;
-    double maxVariance = 0;
-    int optimalTh = 0;
-    for(int th = 0; th < 256; th++){
-        P1k += normHistogram[th];
-        p1k += th * normHistogram[th];
-
-        double P2k = 1-P1k;
-        double p2k = globalMean - p1k;
-
-        double m1k = p1k / P1k;
-        double m2k = p2k / P2k;
-
-        double variance = P1k * P2k * (m1k-m2k) * (m1k-m2k);
-        if(variance > maxVariance){
-            maxVariance = variance;
-            optimalTh = th;
-        }
-    }
-    Mat out = Mat::zeros(src.rows, src.cols, CV_8UC1);
-    for(int i = 0; i < src.rows; i++){
-        for(int j = 0; j < src.cols; j++){
-            if(src.at<uchar>(i, j) > optimalTh){
-                out.at<uchar>(i,j) = 255;
-            }
+    for(int i = 0; i < 256; i++){
+        prob += his[i];
+        currAvgCum += i * his[i];
+        currVariance = pow(avgCum * prob - currAvgCum, 2) / (prob *(1-prob));
+        if(currVariance > maxVariance){
+            maxVariance = currVariance;
+            threshold = i;
         }
     }
 
-    out.copyTo(output);
+    return threshold;
 
 }
