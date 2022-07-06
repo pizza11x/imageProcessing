@@ -1,6 +1,6 @@
-# exercisesElim
+# Image Processing
 
-This repository includes exercises for practicing ImageProcessing.
+This repository includes the main image processing algorithms
 
 # Preliminary steps
 - Open Terminal
