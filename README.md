@@ -1,4 +1,4 @@
-# exercisesElim
+# Image Processing
 
 This repository includes the main image processing algorithms
 
