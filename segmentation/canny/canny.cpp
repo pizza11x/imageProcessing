@@ -125,7 +125,7 @@ void insteresis(Mat &nms, Mat &thresholdInsteresis, int lowTh, int higTh){
     for(int i = 1; i< nms.rows; i++){
         for(int j=1; j<nms.cols; j++){
             if(nms.at<uchar>(i,j)>higTh){
-                    thresholdInsteresis.at<uchar>(i,j)=255;
+                thresholdInsteresis.at<uchar>(i,j)=255;
             }
             else if(nms.at<uchar>(i,j)<lowTh){
                 thresholdInsteresis.at<uchar>(i,j)=0;
