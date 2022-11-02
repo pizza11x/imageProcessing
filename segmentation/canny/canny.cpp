@@ -52,7 +52,7 @@ int main(int argc, char** argv){
 static void canny(Mat &src, Mat &output, int kSize){
     //Apply Gaussian
     Mat imgGaussian;
-    GaussianBlur(src, imgGaussian, Size(5, 5), 0, 0);
+    GaussianBlur(src, imgGaussian, Size(3, 3), 0, 0);
 
     /* Apply Sobel's filters to get the two images in which 
     I have the two components of the gradient vector */
@@ -91,7 +91,7 @@ static void nonMaxSuppression(Mat &magnitude, Mat &orientations, Mat &nms){
             //Check if the central pixel magnitude.at(i, j) is greater than its neighbors in that direction
             if((angle < -157.5 && angle >= 157.5) || (angle > -22.5 && angle <= 22.5)){
                 if(magnitude.at<uchar>(i,j) > magnitude.at<uchar>(i, j-1) &&
-                    magnitude.at<uchar>(i, j) > magnitude.at<uchar>(i, j-1)){
+                    magnitude.at<uchar>(i, j) > magnitude.at<uchar>(i, j+1)){
                         nms.at<uchar>(i, j) = magnitude.at<uchar>(i,j);
                 }
             }
@@ -122,8 +122,8 @@ static void nonMaxSuppression(Mat &magnitude, Mat &orientations, Mat &nms){
 }
 
 void insteresis(Mat &nms, Mat &thresholdInsteresis, int lowTh, int higTh){
-    for(int i = 1; i< nms.rows; i++){
-        for(int j=1; j<nms.cols; j++){
+    for(int i = 0; i< nms.rows; i++){
+        for(int j=0; j<nms.cols; j++){
             if(nms.at<uchar>(i,j)>higTh){
                 thresholdInsteresis.at<uchar>(i,j)=255;
             }
